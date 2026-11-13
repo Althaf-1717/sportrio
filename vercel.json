@@ -1,1 +1,8 @@
-{"rewrites":[{"source":"/((?!assets/|images/|fonts/).*)","destination":"/index.html"}]}
+{
+  "rewrites": [
+    {
+      "source": "/((?!api/|assets/|images/|fonts/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

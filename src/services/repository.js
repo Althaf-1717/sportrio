@@ -45,7 +45,15 @@ export class HttpRepository {
     this.baseUrl = baseUrl;
   }
   async request(path, options = {}) {
-    const r = await fetch(this.baseUrl + path, {
+    let url = this.baseUrl + path;
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      const origin =
+        typeof window !== "undefined" && window.location?.origin
+          ? window.location.origin
+          : "http://localhost:3000";
+      url = new URL(url, origin).toString();
+    }
+    const r = await fetch(url, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       ...options,

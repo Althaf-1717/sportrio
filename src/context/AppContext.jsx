@@ -2,9 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { LocalRepository } from "../services/repository";
 import { Academy } from "../services/academy";
 import { HttpAcademy } from "../services/httpAcademy";
-export const api = import.meta.env.VITE_API_URL
-  ? new HttpAcademy(import.meta.env.VITE_API_URL)
-  : new Academy(new LocalRepository(localStorage), sessionStorage);
+export const api =
+  typeof window !== "undefined" && import.meta.env.VITE_API_URL
+    ? new HttpAcademy(import.meta.env.VITE_API_URL)
+    : new Academy(new LocalRepository(globalThis.localStorage), globalThis.sessionStorage);
 export const AppContext = createContext();
 const Context = AppContext;
 export function AppProvider({ children }) {
