@@ -318,3 +318,36 @@ test("coach provisioning produces valid credentials without exposing hashes", as
   assert.equal(api.snapshot().subscriptions.length, 0);
   assert.equal(api.snapshot().attendance.length, 0);
 });
+
+test("athlete forgot password updates password and enables login with new credentials", async () => {
+  const { api } = await setup();
+  // Attempt invalid email or short password
+  await assert.rejects(() =>
+    api.resetPassword({ email: "notfound@example.com", newPassword: "Short" }),
+  );
+  // Attempt password reset for non-athlete account (e.g. coach)
+  await assert.rejects(() =>
+    api.resetPassword({ email: "coach1@gmail.com", newPassword: "NewCoachPassword123" }),
+  );
+  // Reset student1's password
+  await api.resetPassword({
+    email: "student1@gmail.com",
+    newPassword: "BrandNewPassword2026",
+  });
+  // Old password should fail
+  await assert.rejects(() =>
+    api.login({
+      email: "student1@gmail.com",
+      password: "Student@Sportivo2026",
+      role: "student",
+    }),
+  );
+  // New password should succeed
+  const user = await api.login({
+    email: "student1@gmail.com",
+    password: "BrandNewPassword2026",
+    role: "student",
+  });
+  assert.equal(user.email, "student1@gmail.com");
+  assert.equal(user.role, "student");
+});

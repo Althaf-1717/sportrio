@@ -70,10 +70,8 @@ export default function PublicLayout() {
             <Link to="/contact">Get in touch</Link>
           </div>
           <div>
-            <h4>Your workspace</h4>
+            <h4>Athlete workspace</h4>
             <Link to="/login">Athlete portal ↗</Link>
-            <Link to="/coach">Coach portal ↗</Link>
-            <Link to="/admin">Admin portal ↗</Link>
             <Link to="/register">Create an account ↗</Link>
           </div>
         </div>

@@ -289,6 +289,48 @@ router.post("/auth/logout", (req, res) => {
   res.json({ message: "Logged out" });
 });
 
+// POST /auth/reset-password (athlete forgot password)
+router.post("/auth/reset-password", async (req, res) => {
+  try {
+    const { email, newPassword } = req.body || {};
+    if (!emailValid(email) || !newPassword || newPassword.length < 8) {
+      return res.status(400).json({
+        message: "Enter a valid athlete email and a new password of at least 8 characters.",
+      });
+    }
+
+    const db = await getDb();
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await db.collection("users").findOne({
+      email: cleanEmail,
+      role: "student",
+      active: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "No active athlete account found with this email." });
+    }
+
+    const newHash = hash(newPassword);
+    await db.collection("users").updateOne(
+      { $or: [{ id: user.id }, { _id: user._id }] },
+      { $set: { passwordHash: newHash, passwordAliases: [] } }
+    );
+
+    await db.collection("audit").insertOne({
+      _id: id(),
+      id: id(),
+      actor: user.name,
+      action: "Athlete password reset",
+      date: new Date().toISOString(),
+    });
+
+    res.json({ message: "Password updated successfully. You can now sign in." });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // 5. POST /enrollments
 router.post("/enrollments", requireAuth(["student"]), async (req, res) => {
   try {

@@ -27,6 +27,7 @@ test("Express app has required API routes registered", () => {
   assert.ok(routes.includes("/bootstrap"), "Must include /bootstrap");
   assert.ok(routes.includes("/auth/login"), "Must include /auth/login");
   assert.ok(routes.includes("/auth/register"), "Must include /auth/register");
+  assert.ok(routes.includes("/auth/reset-password"), "Must include /auth/reset-password");
   assert.ok(routes.includes("/enrollments"), "Must include /enrollments");
   assert.ok(routes.includes("/attendance"), "Must include /attendance");
   assert.ok(routes.includes("/evaluations"), "Must include /evaluations");

@@ -41,6 +41,12 @@ export class HttpAcademy {
     const result = await this.mutate("/auth/register", "POST", values);
     return result.user;
   }
+  async resetPassword(values) {
+    return this.http.request("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify(values),
+    });
+  }
   enroll(values) {
     return this.mutate("/enrollments", "POST", values);
   }

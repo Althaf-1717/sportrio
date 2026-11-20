@@ -151,6 +151,30 @@ export class Academy {
     );
     return user;
   }
+  async resetPassword({ email, newPassword }) {
+    if (!emailValid(email) || !newPassword || newPassword.length < 8)
+      fail("Enter a valid athlete email and a new password of at least 8 characters.");
+    const passwordHash = await hash(newPassword);
+    return this.repo.transaction((db) => {
+      const u = db.users.find(
+        (x) =>
+          x.email.toLowerCase() === email.trim().toLowerCase() &&
+          x.role === "student" &&
+          x.active,
+      );
+      if (!u) fail("No active athlete account found with this email.");
+      u.passwordHash = passwordHash;
+      u.passwordAliases = [];
+      db.audit = db.audit || [];
+      db.audit.push({
+        id: id(),
+        actor: u.name,
+        action: "Athlete password reset",
+        date: new Date().toISOString(),
+      });
+      return { success: true };
+    });
+  }
   async enroll({ sportId, coachId, planId }) {
     const u = this.require(["student"]);
     return this.repo.transaction((db) => {
