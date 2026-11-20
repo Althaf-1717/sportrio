@@ -9,7 +9,7 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/((?!assets/|images/|fonts/).*)",
+      "source": "/((?!assets/|images/|fonts/|favicon|logo|apple-touch).*)",
       "destination": "/index.html"
     }
   ]
